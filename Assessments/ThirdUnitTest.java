@@ -65,7 +65,7 @@ public class ThirdUnitTest {
                     } else {
 
                         // divide original number then get sum of digits again
-                        System.out.println(sumOfDigits);
+                        // System.out.println(sumOfDigits);
 
                         // reset sum of digits
                         int secondSumOfDigits = 0;
