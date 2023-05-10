@@ -10,5 +10,13 @@ public class Arrays {
 
         System.out.println(a[0]);
         System.out.println(b[0]);
+
+        funMethod(a);
+        System.out.println(a[0]);
+    }
+    public static void funMethod(int[] temp) {
+        temp[0] = 9;
     }
 }
+
+
