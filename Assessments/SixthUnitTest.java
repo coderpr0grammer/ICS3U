@@ -35,7 +35,7 @@ public class SixthUnitTest {
                 int[] numbersArray = toArray(numbersString);
 
                 // input validation, checks if the set of numbers is big enough or not
-                if (numbersArray.length > 3) {
+                if (numbersArray.length > 4) {
 
                     // get the first difference
                     int firstDifference = numbersArray[1] - numbersArray[0];
@@ -46,7 +46,7 @@ public class SixthUnitTest {
                     for (int i = 0; i < numbersArray.length - 1; i++) {
                         if (numbersArray[i + 1] - numbersArray[i] != firstDifference) {
                             // if any term does not adhere to the first difference, it is notn a pattern
-                            System.out.println("not a pattern");
+                            // System.out.println("not a pattern");
                             pattern = false;
                         }
                     }
@@ -58,6 +58,7 @@ public class SixthUnitTest {
                         // ask for the next number
                         System.out.println("Enter the next number: ");
                         int nextInt = input.nextInt();
+                        input.nextLine();
 
                         // compare the expected next term to the inputted term
                         if (numbersArray[numbersArray.length - 1] + firstDifference == nextInt) {
@@ -89,7 +90,7 @@ public class SixthUnitTest {
                     }
 
                 } else {
-                    System.out.println("please enter at least 4 numbers: ");
+                    System.out.println("please enter at least 5 numbers: ");
 
                 }
 
