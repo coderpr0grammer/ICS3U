@@ -2,7 +2,8 @@ package MastermindFinalProject;
 
 import java.util.Scanner;
 import java.util.Random;
-import MastermindFinalProject.Timer;
+import MastermindFinalProject.*;
+
 
 public class FinalProjectMastermind {
     public static void main(String[] args) {
@@ -24,7 +25,7 @@ public class FinalProjectMastermind {
         boolean runGame = true;
 
         // System.out.print("\033[108m\033[30m");
-        
+
         System.out.println("----------------------------");
         System.out.println("| Welcome to MASTERMIND 🧠 |");
         System.out.println("----------------------------");
@@ -33,7 +34,7 @@ public class FinalProjectMastermind {
         while (runGame) {
 
 
-            Timer timer = new Timer();
+            Stopwatch timer = new Stopwatch();
             Random rand = new Random();
 
             int code = rand.nextInt(10000);
@@ -52,17 +53,17 @@ public class FinalProjectMastermind {
 
             String option = input.next();
 
-            // Thread timerThread = new Thread(() -> {
-            // timer.start(10);
-            // timer.displayTimer();
-            // });
+            Thread timerThread = new Thread(() -> {
+                timer.start(10);
+                timer.displayTimer();
+            });
 
-            // Thread inputThread = new Thread(() -> {
-            // System.out.println("");
-            // String guess = input.nextLine();
-            // System.out.println("Received input: " + guess);
+            Thread inputThread = new Thread(() -> {
+                System.out.println("");
+                String guess = input.nextLine();
+                System.out.println("Received input: " + guess);
 
-            // });
+            });
 
             if (!option.equalsIgnoreCase("0")) {
                 // startGame
@@ -104,18 +105,15 @@ public class FinalProjectMastermind {
                         System.out.println("You need to enter a 4 digit number");
                     }
 
-                    // for (int i = 0; i < 5; i++) {
+                    timerThread.start();
+                    inputThread.start();
 
-                    // timerThread.start();
-                    // inputThread.start();
-
-                    // try {
-                    // timerThread.join();
-                    // inputThread.join();
-                    // } catch (InterruptedException e) {
-                    // e.printStackTrace();
-                    // }
-                    // }
+                    try {
+                        timerThread.join();
+                        inputThread.join();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
 
                     System.out.println("Game over.");
                 }

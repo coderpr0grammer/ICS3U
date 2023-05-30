@@ -1,12 +1,12 @@
 package MastermindFinalProject;
 
-public class Timer {
+public class Stopwatch {
     private long startTime;
     private long elapsedTime;
     private boolean isRunning;
-    private int timerLimit;
+    public int timerLimit;
 
-    public Timer() {
+    public Stopwatch() {
         startTime = 0;
         elapsedTime = 0;
         isRunning = false;
@@ -54,7 +54,7 @@ public class Timer {
         minutes %= 60;
 
         // Format the time
-        String time = String.format("%02d:%02d:%02d", minutes, seconds, tenths);
+        String time = String.format("%02d:%02d", seconds, tenths);
 
         return time;
     }
@@ -72,7 +72,7 @@ public class Timer {
 
                 try {
                     // Delay the loop for 1 second
-                    Thread.sleep(1000);
+                    Thread.sleep(100);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
