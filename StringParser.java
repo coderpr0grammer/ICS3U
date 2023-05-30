@@ -15,11 +15,11 @@ public class StringParser {
             System.out.println("Digits at position "+counter+":"+ mod);
             number = number / 10;
             stringNumber = mod + stringNumber;
-            counter--;
+            counter++;
         }
 
         
-        // System.out.println(stringNumber);
+        System.out.println(stringNumber);
     }
     
 }
