@@ -3,7 +3,7 @@ package MastermindFinalProject;
 import javax.swing.*;
 
 public class ScrollableTextarea {
-    public static JScrollPane scrollPane;
+    public JScrollPane scrollPane;
     public static JTextArea textArea = new JTextArea();
 
     public ScrollableTextarea() {

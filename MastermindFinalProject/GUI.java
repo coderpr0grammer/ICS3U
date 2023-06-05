@@ -1,28 +1,28 @@
 package MastermindFinalProject;
 
-import MastermindFinalProject.Stopwatch;
-import MastermindFinalProject.ScrollableTextarea;
 import java.awt.BorderLayout;
 import java.awt.*;
-import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JTextArea;
-import javax.swing.JLabel;
-import javax.swing.JScrollPane;
-
+import javax.swing.*;
 import java.util.TimerTask;
-import javax.swing.JTextField;
+import java.util.Random;
 
 public class GUI {
 
+  // setup Java Swing objects
+  public static JFrame f = new JFrame("MasterTime");
+  public static Container panel = f.getContentPane();
   public static Stopwatch stopwatch = new Stopwatch();
   public static JLabel label = new JLabel();
-
   public static ScrollableTextarea textArea = new ScrollableTextarea();
+  public static JTextField textField = new JTextField(20);
+  public static int guessesRemaining = 10;
+  public static boolean gameRunning = true;
+
+  public static Random rand = new Random();
+
+  public static int code = rand.nextInt(9999 - 1000 + 1) + 1000;
 
   public static void displayTimer() {
     TimerTask task = new TimerTask() {
@@ -45,56 +45,95 @@ public class GUI {
     label.setText("⏰ " + stopwatch.getTimeString());
   }
 
+  public static void initializeFrame() {
 
-  public static void main(String[] args) {
-
-    label.setPreferredSize(new Dimension(200, 50));
-
-    JFrame f = new JFrame("MasterTime");
-
+    // setup frame
     f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-    // Create a new font with the desired size
-    Font font = new Font(label.getFont().getName(), Font.PLAIN, 20);
-
-    // Set the new font to the label
-    label.setFont(font);
-
     f.setSize(500, 500);
     f.setLocation(300, 200);
 
-    // Add the label to the frame
-    f.getContentPane().add(BorderLayout.NORTH, label);
+    // setup label
+    label.setPreferredSize(new Dimension(200, 50));
+    // Create a new font with the desired size
+    Font font = new Font(label.getFont().getName(), Font.PLAIN, 20);
+    // Set the new font to the label
+    label.setFont(font);
 
-
-    JTextField textField = new JTextField(20); // Specify the desired width
-    f.getContentPane().add(BorderLayout.CENTER, textArea.scrollPane);
-
+    // setup textField properties
     Insets padding = new Insets(5, 5, 5, 5);
     textField.setMargin(padding);
-    f.getContentPane().add(BorderLayout.SOUTH, textField);
 
-    f.pack();
+    // Add the objects to the frame
+    panel.add(BorderLayout.NORTH, label);
+    panel.add(BorderLayout.CENTER, textArea.scrollPane);
+    panel.add(BorderLayout.SOUTH, textField);
 
-    textField.addActionListener(new ActionListener() {
+    // pack the frame to the size that the items actually take up
+    // f.pack();
+    f.setVisible(true);
 
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        // pressed enter
-        String text = textField.getText();
-        System.out.println(text);
+    textArea.appendText("-------------------------", false);
+    textArea.appendText("| Welcome to MASTERMIND 🧠 |", true);
+    textArea.appendText("-------------------------", true);
+    textArea.appendText("", true);
 
-        textArea.appendText(text, true);
+    textArea.appendText(
+        "| Your mission, if you choose to accept it, will be to guess the 4 digit code to defuse the bomb 💣", true);
+    textArea.appendText("| 🚀 Are you ready?", true);
+    textArea.appendText("| ⚡ Type anything and press enter to start", true);
+    textArea.appendText("| 🚪 Enter 0 to exit", true);
 
-      }
+  }
 
-    });
+  public static void main(String[] args) {
+
+    initializeFrame();
+
+    textArea.appendText("" + code, true);
 
     stopwatch.start(10);
 
     displayTimer();
 
-    f.setVisible(true);
+    while (gameRunning) {
+
+      textField.addActionListener(new ActionListener() {
+
+        // @Override
+        public void actionPerformed(ActionEvent e) {
+          // pressed enter
+
+          String guessString = textField.getText();
+          textField.setText("");
+
+          System.out.println(guessString);
+
+          int guess;
+          textArea.appendText("\n" + guessString, true);
+
+          try {
+            guess = Integer.parseInt(guessString);
+            if (guess == code) {
+              textArea.appendText("You defused the bomb!.", true);
+
+            } else {
+              if (guessString.length() == 4) {
+                guessesRemaining--;
+
+                textArea.appendText("You have " + guessesRemaining + " guesses remaining.", true);
+              } else {
+                textArea.appendText("\nIt's a 4 digit number, you stupid? ", true);
+              }
+            }
+
+          } catch (Exception error) {
+            textArea.appendText("\nEnter a valid number!", true);
+          }
+
+        }
+
+      });
+    }
 
   }
 
