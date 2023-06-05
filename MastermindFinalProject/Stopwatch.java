@@ -54,7 +54,7 @@ public class Stopwatch {
         minutes %= 60;
 
         // Format the time
-        String time = String.format("%02d:%02d", seconds, tenths);
+        String time = String.format("%02d:%02d", timerLimit - seconds, 10 - tenths);
 
         return time;
     }
