@@ -3,7 +3,7 @@ package MastermindFinalProject;
 public class Stopwatch {
     private long startTime;
     private long elapsedTime;
-    private boolean isRunning;
+    public boolean isRunning;
     public int timerLimit;
 
     public Stopwatch() {

@@ -14,24 +14,63 @@ public class GUI {
   public static JFrame f = new JFrame("MasterTime");
   public static Container panel = f.getContentPane();
   public static Stopwatch stopwatch = new Stopwatch();
+  public static Stopwatch explosionStopwatch = new Stopwatch();
   public static JLabel label = new JLabel();
   public static ScrollableTextarea textArea = new ScrollableTextarea();
   public static JTextField textField = new JTextField(20);
   public static int guessesRemaining = 10;
-  public static boolean gameRunning = true;
+  public static boolean timerRunning = true;
 
   public static Random rand = new Random();
 
   public static int code = rand.nextInt(9999 - 1000 + 1) + 1000;
 
+  public static void explosionAnimation() {
+    TimerTask task = new TimerTask() {
+      @Override
+      public void run() {
+
+          explosionStopwatch.start(5);
+
+          if (explosionStopwatch.getElapsedTime() / 1000 <= explosionStopwatch.timerLimit) {
+
+            // f.setSize(200, 200);
+            f.setLocation(rand.nextInt(1000), rand.nextInt(1000));
+          } else {
+            stopwatch.pause();
+          }
+      }
+    };
+
+    // Schedule the task to run every 100 milliseconds
+    java.util.Timer timer = new java.util.Timer();
+    timer.scheduleAtFixedRate(task, 0, 10);
+  }
+
   public static void displayTimer() {
     TimerTask task = new TimerTask() {
       @Override
       public void run() {
-        if (stopwatch.getElapsedTime() / 1000 <= stopwatch.timerLimit) {
-          updateLabel(); // Update the label with the current time
-        } else {
-          stopwatch.pause();
+        if (timerRunning) {
+          if (stopwatch.getElapsedTime() / 1000 <= stopwatch.timerLimit) {
+            updateLabel(); // Update the label with the current time
+
+            // f.setSize(200, 200);
+            // f.setLocation(rand.nextInt(500), rand.nextInt(500));
+          } else {
+            stopwatch.pause();
+            timerRunning = stopwatch.isRunning;
+            textArea.appendText("\nYou lost L + ratio + bozo + you fell off + you use twitter ", true);
+
+            try {
+
+              Thread.sleep(500);
+            } catch (Exception e) {
+              System.out.println(e);
+            }
+            explosionAnimation();
+
+          }
         }
       }
     };
@@ -48,7 +87,7 @@ public class GUI {
   public static void initializeFrame() {
 
     // setup frame
-    f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    f.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
     f.setSize(500, 500);
     f.setLocation(300, 200);
 
@@ -78,10 +117,11 @@ public class GUI {
     textArea.appendText("", true);
 
     textArea.appendText(
-        "| Your mission, if you choose to accept it, will be to guess the 4 digit code to defuse the bomb 💣", true);
+        "| EPILEPSY WARNING\n| Your mission, if you choose to accept it, will be to guess the 4 digit code to defuse the bomb 💣",
+        true);
     textArea.appendText("| 🚀 Are you ready?", true);
     textArea.appendText("| ⚡ Type anything and press enter to start", true);
-    textArea.appendText("| 🚪 Enter 0 to exit", true);
+    textArea.appendText("| 😈😈😈 You can't leave the game until", true);
 
   }
 
@@ -89,51 +129,64 @@ public class GUI {
 
     initializeFrame();
 
+    textField.requestFocus();
+
     textArea.appendText("" + code, true);
 
-    stopwatch.start(10);
+    stopwatch.start(60);
 
     displayTimer();
 
-    while (gameRunning) {
+    textField.addActionListener(new ActionListener() {
 
-      textField.addActionListener(new ActionListener() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        // pressed enter
 
-        // @Override
-        public void actionPerformed(ActionEvent e) {
-          // pressed enter
+        if (timerRunning) {
+          // if the timer is not done
+          if (textField.getText().length() > 1) {
+            // if they're actually inputting something
+            textField.setEnabled(false);
 
-          String guessString = textField.getText();
-          textField.setText("");
+            String guessString = textField.getText();
 
-          System.out.println(guessString);
+            System.out.println(guessString);
 
-          int guess;
-          textArea.appendText("\n" + guessString, true);
+            int guess;
+            textArea.appendText("\n" + guessString, true);
 
-          try {
-            guess = Integer.parseInt(guessString);
-            if (guess == code) {
-              textArea.appendText("You defused the bomb!.", true);
+            try {
+              guess = Integer.parseInt(guessString);
+              if (guess == code) {
+                textArea.appendText("You defused the bomb!.", true);
 
-            } else {
-              if (guessString.length() == 4) {
-                guessesRemaining--;
-
-                textArea.appendText("You have " + guessesRemaining + " guesses remaining.", true);
               } else {
-                textArea.appendText("\nIt's a 4 digit number, you stupid? ", true);
+                if (guessString.length() == 4) {
+                  guessesRemaining--;
+
+                  textArea.appendText("You have " + guessesRemaining + " guesses remaining.",
+                      true);
+                } else {
+                  textArea.appendText("\nIt's a 4 digit number, you stupid? ", true);
+                }
               }
+
+            } catch (NumberFormatException error) {
+              // textArea.appendText("\nEnter a valid number!", true);
+              System.out.println(error);
+              textArea.appendText("\nEnter a valid number, you stupid? ", true);
             }
+            textField.setText("");
+            textField.setEnabled(true);
 
-          } catch (Exception error) {
-            textArea.appendText("\nEnter a valid number!", true);
+            textField.requestFocus();
+
           }
-
         }
+      }
 
-      });
-    }
+    });
 
   }
 
