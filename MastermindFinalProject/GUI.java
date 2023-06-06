@@ -11,7 +11,7 @@ import java.util.Random;
 public class GUI {
 
   // setup Java Swing objects
-  public static JFrame f = new JFrame("MasterTime");
+  public static JFrame f = new JFrame("You can't leave this game");
   public static Container panel = f.getContentPane();
   public static Stopwatch stopwatch = new Stopwatch();
   public static Stopwatch explosionStopwatch = new Stopwatch();
@@ -20,6 +20,8 @@ public class GUI {
   public static JTextField textField = new JTextField(20);
   public static int guessesRemaining = 10;
   public static boolean timerRunning = true;
+  public static boolean gameStarted = false;
+  public static int secondsToPlay = 9;
 
   public static Random rand = new Random();
 
@@ -30,12 +32,12 @@ public class GUI {
       @Override
       public void run() {
 
-          explosionStopwatch.start(5);
+          explosionStopwatch.start(3);
 
           if (explosionStopwatch.getElapsedTime() / 1000 <= explosionStopwatch.timerLimit) {
 
             // f.setSize(200, 200);
-            f.setLocation(rand.nextInt(1000), rand.nextInt(1000));
+            f.setLocation(rand.nextInt(500), rand.nextInt(500));
           } else {
             stopwatch.pause();
           }
@@ -61,7 +63,9 @@ public class GUI {
             stopwatch.pause();
             timerRunning = stopwatch.isRunning;
             textArea.appendText("\nYou lost L + ratio + bozo + you fell off + you use twitter ", true);
+            textArea.appendText("The code was " + code, true);
 
+            // gameStarted = true;
             try {
 
               Thread.sleep(500);
@@ -81,7 +85,7 @@ public class GUI {
   }
 
   private static void updateLabel() {
-    label.setText("⏰ " + stopwatch.getTimeString());
+    label.setText(" ⏰ " + stopwatch.getTimeString());
   }
 
   public static void initializeFrame() {
@@ -118,10 +122,10 @@ public class GUI {
 
     textArea.appendText(
         "| EPILEPSY WARNING\n| Your mission, if you choose to accept it, will be to guess the 4 digit code to defuse the bomb 💣",
-        true);
-    textArea.appendText("| 🚀 Are you ready?", true);
+        false);
+
     textArea.appendText("| ⚡ Type anything and press enter to start", true);
-    textArea.appendText("| 😈😈😈 You can't leave the game until", true);
+    textArea.appendText("| 😈 You can't leave the game until you win", true);
 
   }
 
@@ -133,7 +137,9 @@ public class GUI {
 
     textArea.appendText("" + code, true);
 
-    stopwatch.start(60);
+    stopwatch.start(secondsToPlay);
+
+    stopwatch.pause();
 
     displayTimer();
 
@@ -142,6 +148,13 @@ public class GUI {
       @Override
       public void actionPerformed(ActionEvent e) {
         // pressed enter
+
+        if (!gameStarted) {
+          stopwatch.start(secondsToPlay);
+          gameStarted = true;
+          timerRunning = stopwatch.isRunning;
+          System.out.println(timerRunning);
+        }
 
         if (timerRunning) {
           // if the timer is not done
@@ -159,7 +172,8 @@ public class GUI {
             try {
               guess = Integer.parseInt(guessString);
               if (guess == code) {
-                textArea.appendText("You defused the bomb!.", true);
+                textArea.appendText("You defused the bomb!", true);
+                stopwatch.pause();
 
               } else {
                 if (guessString.length() == 4) {
