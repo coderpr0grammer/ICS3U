@@ -139,7 +139,8 @@ public class GUI {
     guessesRemaining = 10;
     rand = new Random();
 
-    code = rand.nextInt(9999 - 1000 + 1) + 1000;
+    // code = rand.nextInt(9999 - 1000 + 1) + 1000;
+    code = 5323;
     codeString = "" + code;
 
     System.out.println(stopwatch.isRunning);
@@ -179,6 +180,7 @@ public class GUI {
 
         if (!gameStarted) {
           resetGame();
+          System.out.println("code" + code);
           gameStarted = true;
         }
 
@@ -200,6 +202,10 @@ public class GUI {
               if (guess == code) {
                 textArea.appendText("You defused the bomb!", true);
                 stopwatch.pause();
+
+                gameStarted = false;
+                askIfUserWantsToPlayAgain();
+
                 f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
               } else {
@@ -210,20 +216,49 @@ public class GUI {
                   int exactMatches = 0;
                   int partialMatches = 0;
                   int wrongNumbers = 0;
+                  boolean[] exactMatchesArray = new boolean[codeString.length()];
+                  boolean[] partialMatchesArray = new boolean[codeString.length()];
 
-                  // feedback system
-                  for (int i = 0; i < guessString.length(); i++) {
-                    if (guessString.charAt(i) == codeString.charAt(i)) {
-                      // exact match
+                  String codeStringCopy = codeString;
+
+                  for (int i = 0; i<codeString.length(); i++) {
+                    if (guessString.charAt(i) == codeStringCopy.charAt(i)) {
+                      //exact match
                       exactMatches++;
-                    } else if (codeString.indexOf(guessString.charAt(i)) != -1) {
-                      // code includes the number
+                      codeStringCopy = codeStringCopy.replaceFirst(guessString.charAt(i)+ "", "*");
+
+                    } else if (codeStringCopy.indexOf(guessString.charAt(i)) != -1){
                       partialMatches++;
+
+                      codeStringCopy = codeStringCopy.replaceFirst(guessString.charAt(i)+ "", "*");
                     } else {
-                      // does not include that number
+                      //not in the array
                       wrongNumbers++;
                     }
                   }
+
+                  //loop through the numbers in the code
+                  //if the number at the same position matches in the guess, then it's an exact match
+                  //else check if that number is in the code 
+                  // if it is in the code, then save the value of the matched number
+                  //if it's not in the code then its not a match
+
+
+
+
+                  // feedback system
+                  // for (int i = 0; i < guessString.length(); i++) {
+                  //   if (guessString.charAt(i) == codeString.charAt(i)) {
+                  //     // exact match
+                  //     exactMatches++;
+                  //   } else if (codeString.indexOf(guessString.charAt(i)) != -1) {
+                  //     // code includes the number
+                  //     partialMatches++;
+                  //   } else {
+                  //     // does not include that number
+                  //     wrongNumbers++;
+                  //   }
+                  // }
 
                   textArea.appendText(
                       "✅ " + exactMatches + " " + ((exactMatches == 1) ? "number" : "numbers") + " right",

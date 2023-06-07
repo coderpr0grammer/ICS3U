@@ -40,7 +40,6 @@ public class ScrollableTextarea {
     public void typewriter(String text) {
         String oldText = textArea.getText();
         for (int i = 0; i < text.length(); i++) {
-            System.out.println(text.charAt(i));
             textArea.setText(oldText + text.charAt(i));
             oldText = textArea.getText();
             try {
