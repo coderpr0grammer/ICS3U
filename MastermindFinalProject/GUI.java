@@ -216,8 +216,6 @@ public class GUI {
                   int exactMatches = 0;
                   int partialMatches = 0;
                   int wrongNumbers = 0;
-                  boolean[] exactMatchesArray = new boolean[codeString.length()];
-                  boolean[] partialMatchesArray = new boolean[codeString.length()];
 
                   String codeStringCopy = codeString;
 
@@ -236,29 +234,6 @@ public class GUI {
                       wrongNumbers++;
                     }
                   }
-
-                  //loop through the numbers in the code
-                  //if the number at the same position matches in the guess, then it's an exact match
-                  //else check if that number is in the code 
-                  // if it is in the code, then save the value of the matched number
-                  //if it's not in the code then its not a match
-
-
-
-
-                  // feedback system
-                  // for (int i = 0; i < guessString.length(); i++) {
-                  //   if (guessString.charAt(i) == codeString.charAt(i)) {
-                  //     // exact match
-                  //     exactMatches++;
-                  //   } else if (codeString.indexOf(guessString.charAt(i)) != -1) {
-                  //     // code includes the number
-                  //     partialMatches++;
-                  //   } else {
-                  //     // does not include that number
-                  //     wrongNumbers++;
-                  //   }
-                  // }
 
                   textArea.appendText(
                       "✅ " + exactMatches + " " + ((exactMatches == 1) ? "number" : "numbers") + " right",
