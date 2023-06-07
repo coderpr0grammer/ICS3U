@@ -37,4 +37,13 @@ public class ScrollableTextarea {
         textArea.setText(textArea.getText() + (newLine ? "\n" : "") + text);
     }
 
+    public void typewriter(String text) throws InterruptedException {
+        String oldText = textArea.getText();
+        for (int i = 0; i < text.length(); i++) {
+            textArea.setText(oldText + text.charAt(i));
+            Thread.sleep(20);
+
+        }
+    }
+
 }

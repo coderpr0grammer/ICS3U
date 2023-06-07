@@ -135,7 +135,7 @@ public class GUI {
 
     textField.requestFocus();
 
-    textArea.appendText("" + code, true);
+    // textArea.appendText("" + code, true);
 
   }
 
@@ -188,12 +188,11 @@ public class GUI {
                   int partialMatches = 0;
                   int wrongNumbers = 0;
 
+                  // feedback system
                   for (int i = 0; i < guessString.length(); i++) {
                     if (guessString.charAt(i) == codeString.charAt(i)) {
                       // exact match
-
                       exactMatches++;
-
                     } else if (codeString.indexOf(guessString.charAt(i)) != -1) {
                       // code includes the number
                       partialMatches++;
@@ -204,12 +203,12 @@ public class GUI {
                   }
 
                   textArea.appendText(
-                      "✅ You got " + exactMatches + " " + ((exactMatches == 1) ? "number" : "numbers") + " right",
+                      "✅ " + exactMatches + " " + ((exactMatches == 1) ? "number" : "numbers") + " right",
                       true);
-                  textArea.appendText("🆗 You got " + partialMatches + " "
+                  textArea.appendText("🆗 " + partialMatches + " "
                       + ((partialMatches == 1) ? "number" : "numbers") + " correct, but in the wrong spot", true);
                   textArea.appendText(
-                      "❌ You got " + wrongNumbers + " " + ((wrongNumbers == 1) ? "number" : "numbers") + "wrong", true);
+                      "❌ " + wrongNumbers + " " + ((wrongNumbers == 1) ? "number" : "numbers") + " wrong", true);
 
                 } else {
                   textArea.appendText("\nIt's a 4 digit number, you stupid? ", true);
@@ -226,17 +225,18 @@ public class GUI {
 
             textField.requestFocus();
 
+            if (guessesRemaining > 0) {
+              textArea.appendText("You have " + guessesRemaining + " guesses remaining.", true);
+            } else {
+              textArea.appendText("You ran out of guesses! ", true);
+              textArea.appendText("The code was " + code, true);
+              stopwatch.pause();
+              explosionAnimation();
+
+            }
+
           }
 
-          if (guessesRemaining > 0) {
-            textArea.appendText("You have " + guessesRemaining + " guesses remaining.", true);
-          } else {
-            textArea.appendText("You ran out of guesses! ", true);
-            textArea.appendText("The code was " + code, true);
-            stopwatch.pause();
-            explosionAnimation();
-
-          }
         }
 
       }
