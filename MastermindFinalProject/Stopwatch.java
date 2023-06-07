@@ -29,6 +29,12 @@ public class Stopwatch {
         }
     }
 
+    public void reset() {
+        elapsedTime = 0;
+        startTime = System.currentTimeMillis();
+        isRunning = true;
+    }
+
     public long getElapsedTime() {
         long totalTime = elapsedTime;
         if (isRunning) {
@@ -54,7 +60,7 @@ public class Stopwatch {
         minutes %= 60;
 
         // Format the time
-        String time = String.format("%02d:%02d", timerLimit - seconds, 10 - tenths);
+        String time = String.format("%02d:%02d", timerLimit - seconds, 9 - tenths);
 
         return time;
     }

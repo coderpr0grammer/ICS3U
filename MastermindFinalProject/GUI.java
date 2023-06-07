@@ -20,14 +20,15 @@ public class GUI {
   public static JTextField textField = new JTextField(20);
   public static int guessesRemaining = 10;
   public static boolean gameStarted = false;
+  public static boolean gameEnded = false;
   public static int secondsToPlay = 59;
 
-  public static Random rand = new Random();
-
-  public static int code = rand.nextInt(9999 - 1000 + 1) + 1000;
-  public static String codeString = "" + code;
+  public static Random rand;
+  public static int code;
+  public static String codeString;
 
   public static void explosionAnimation() {
+    explosionStopwatch.reset();
     TimerTask task = new TimerTask() {
       @Override
       public void run() {
@@ -63,8 +64,9 @@ public class GUI {
             stopwatch.pause();
             textArea.appendText("\nYou lost L + ratio + bozo + you fell off + you use twitter ", true);
             textArea.appendText("The code was " + code, true);
+            askIfUserWantsToPlayAgain();
 
-            // gameStarted = true;
+            // gameStarted = true;x
             try {
 
               Thread.sleep(500);
@@ -72,6 +74,7 @@ public class GUI {
               System.out.println(e);
             }
             explosionAnimation();
+            gameStarted = false;
 
           }
         }
@@ -115,28 +118,47 @@ public class GUI {
     // f.pack();
     f.setVisible(true);
 
-    textArea.appendText("-------------------------", false);
-    textArea.appendText("| Welcome to MASTERMIND 🧠 |", true);
-    textArea.appendText("-------------------------", true);
-    textArea.appendText("", true);
-
-    textArea.appendText(
-        "| EPILEPSY WARNING",
-        true);
-    textArea.appendText(
-        "| Yes, another bomb defusing game. \n",
-        true);
-    textArea.appendText(
-        "| Your mission, which you have to accept, will be to guess the 4 digit code to defuse the bomb 💣",
-        true);
-
-    textArea.appendText("| ⚡ Type your first guess and press enter to start", true);
-    textArea.appendText("| 😈 You can't leave the game until you win", true);
+    textArea.typewriter("-------------------------\n" +
+        "| Welcome to MASTERMIND 🧠 |\n" +
+        "-------------------------\n\n" +
+        "| EPILEPSY WARNING\n" +
+        "| Yes, another bomb defusing game. \n" +
+        "| Your mission, which you have to accept, will be to guess the 4 digit code to defuse the bomb 💣\n" +
+        "| ⚡️ Type your first guess and press enter to start\n" +
+        "| 😈 You can't leave the game until you win\n");
 
     textField.requestFocus();
 
     // textArea.appendText("" + code, true);
+  }
 
+  public static void resetGame() {
+    // explosionStopwatch.reset();
+    textArea.setText("");
+
+    guessesRemaining = 10;
+    rand = new Random();
+
+    code = rand.nextInt(9999 - 1000 + 1) + 1000;
+    codeString = "" + code;
+
+    System.out.println(stopwatch.isRunning);
+    label.setText(" ⏰ " + (secondsToPlay + 1) + ":00");
+
+    textArea.setText("-------------------------\n" +
+        "| Welcome to MASTERMIND 🧠 |\n" +
+        "-------------------------\n\n" +
+        "| EPILEPSY WARNING\n" +
+        "| Yes, another bomb defusing game. \n" +
+        "| Your mission, which you have to accept, will be to guess the 4 digit code to defuse the bomb 💣\n" +
+        "| ⚡️ Type your first guess and press enter to start\n" +
+        "| 😈 You can't leave the game until you win\n");
+
+    stopwatch.reset();
+  }
+
+  public static void askIfUserWantsToPlayAgain() {
+    textArea.appendText("\nWant to play a game?\nEnter a new guess to start a new game?", true);
   }
 
   public void newGameInstance() {
@@ -156,7 +178,7 @@ public class GUI {
         // pressed enter
 
         if (!gameStarted) {
-          stopwatch.start(secondsToPlay);
+          resetGame();
           gameStarted = true;
         }
 
@@ -178,6 +200,7 @@ public class GUI {
               if (guess == code) {
                 textArea.appendText("You defused the bomb!", true);
                 stopwatch.pause();
+                f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
               } else {
                 if (guessString.length() == 4) {
@@ -228,10 +251,12 @@ public class GUI {
             if (guessesRemaining > 0) {
               textArea.appendText("You have " + guessesRemaining + " guesses remaining.", true);
             } else {
-              textArea.appendText("You ran out of guesses! ", true);
+              textArea.appendText("\nYou ran out of guesses! ", true);
               textArea.appendText("The code was " + code, true);
               stopwatch.pause();
+              gameStarted = false;
               explosionAnimation();
+              askIfUserWantsToPlayAgain();
 
             }
 
