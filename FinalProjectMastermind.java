@@ -1,4 +1,4 @@
-package MastermindFinalProject;
+
 
 import java.util.Scanner;
 import java.util.Random;

@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
 
-public class TestMastermind {
+public class TestMastermindROUGH {
     private static final int CODE_LENGTH = 4;
     private static final int MAX_GUESSES = 10;
     private static final char[] COLORS = { 'R', 'G', 'B', 'Y', 'O', 'P' };
@@ -13,7 +13,7 @@ public class TestMastermind {
     private List<char[]> guesses;
     private List<String> feedbacks;
 
-    public TestMastermind() {
+    public TestMastermindROUGH() {
         secretCode = generateSecretCode();
         guesses = new ArrayList<>();
         feedbacks = new ArrayList<>();
@@ -102,7 +102,7 @@ public class TestMastermind {
     }
 
     public static void main(String[] args) {
-        MastermindGame game = new MastermindGame();
+        TestMastermindROUGH game = new TestMastermindROUGH();
         game.play();
     }
 }
