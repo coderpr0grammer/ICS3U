@@ -19,28 +19,28 @@ public class GUI {
   public static ScrollableTextarea textArea = new ScrollableTextarea();
   public static JTextField textField = new JTextField(20);
   public static int guessesRemaining = 10;
-  public static boolean timerRunning = true;
   public static boolean gameStarted = false;
-  public static int secondsToPlay = 9;
+  public static int secondsToPlay = 59;
 
   public static Random rand = new Random();
 
   public static int code = rand.nextInt(9999 - 1000 + 1) + 1000;
+  public static String codeString = "" + code;
 
   public static void explosionAnimation() {
     TimerTask task = new TimerTask() {
       @Override
       public void run() {
 
-          explosionStopwatch.start(3);
+        explosionStopwatch.start(3);
 
-          if (explosionStopwatch.getElapsedTime() / 1000 <= explosionStopwatch.timerLimit) {
+        if (explosionStopwatch.getElapsedTime() / 1000 <= explosionStopwatch.timerLimit) {
 
-            // f.setSize(200, 200);
-            f.setLocation(rand.nextInt(500), rand.nextInt(500));
-          } else {
-            stopwatch.pause();
-          }
+          // f.setSize(200, 200);
+          f.setLocation(rand.nextInt(500), rand.nextInt(500));
+        } else {
+          explosionStopwatch.pause();
+        }
       }
     };
 
@@ -53,7 +53,7 @@ public class GUI {
     TimerTask task = new TimerTask() {
       @Override
       public void run() {
-        if (timerRunning) {
+        if (stopwatch.isRunning) {
           if (stopwatch.getElapsedTime() / 1000 <= stopwatch.timerLimit) {
             updateLabel(); // Update the label with the current time
 
@@ -61,7 +61,6 @@ public class GUI {
             // f.setLocation(rand.nextInt(500), rand.nextInt(500));
           } else {
             stopwatch.pause();
-            timerRunning = stopwatch.isRunning;
             textArea.appendText("\nYou lost L + ratio + bozo + you fell off + you use twitter ", true);
             textArea.appendText("The code was " + code, true);
 
@@ -101,6 +100,7 @@ public class GUI {
     Font font = new Font(label.getFont().getName(), Font.PLAIN, 20);
     // Set the new font to the label
     label.setFont(font);
+    label.setText(" ⏰ " + (secondsToPlay + 1) + ":00");
 
     // setup textField properties
     Insets padding = new Insets(5, 5, 5, 5);
@@ -121,21 +121,27 @@ public class GUI {
     textArea.appendText("", true);
 
     textArea.appendText(
-        "| EPILEPSY WARNING\n| Your mission, if you choose to accept it, will be to guess the 4 digit code to defuse the bomb 💣",
-        false);
+        "| EPILEPSY WARNING",
+        true);
+    textArea.appendText(
+        "| Yes, another bomb defusing game. \n",
+        true);
+    textArea.appendText(
+        "| Your mission, which you have to accept, will be to guess the 4 digit code to defuse the bomb 💣",
+        true);
 
-    textArea.appendText("| ⚡ Type anything and press enter to start", true);
+    textArea.appendText("| ⚡ Type your first guess and press enter to start", true);
     textArea.appendText("| 😈 You can't leave the game until you win", true);
-
-  }
-
-  public static void main(String[] args) {
-
-    initializeFrame();
 
     textField.requestFocus();
 
     textArea.appendText("" + code, true);
+
+  }
+
+  public void newGameInstance() {
+
+    initializeFrame();
 
     stopwatch.start(secondsToPlay);
 
@@ -152,13 +158,11 @@ public class GUI {
         if (!gameStarted) {
           stopwatch.start(secondsToPlay);
           gameStarted = true;
-          timerRunning = stopwatch.isRunning;
-          System.out.println(timerRunning);
         }
 
-        if (timerRunning) {
+        if (stopwatch.isRunning) {
           // if the timer is not done
-          if (textField.getText().length() > 1) {
+          if (textField.getText().length() >= 1) {
             // if they're actually inputting something
             textField.setEnabled(false);
 
@@ -177,10 +181,36 @@ public class GUI {
 
               } else {
                 if (guessString.length() == 4) {
+
                   guessesRemaining--;
 
-                  textArea.appendText("You have " + guessesRemaining + " guesses remaining.",
+                  int exactMatches = 0;
+                  int partialMatches = 0;
+                  int wrongNumbers = 0;
+
+                  for (int i = 0; i < guessString.length(); i++) {
+                    if (guessString.charAt(i) == codeString.charAt(i)) {
+                      // exact match
+
+                      exactMatches++;
+
+                    } else if (codeString.indexOf(guessString.charAt(i)) != -1) {
+                      // code includes the number
+                      partialMatches++;
+                    } else {
+                      // does not include that number
+                      wrongNumbers++;
+                    }
+                  }
+
+                  textArea.appendText(
+                      "✅ You got " + exactMatches + " " + ((exactMatches == 1) ? "number" : "numbers") + " right",
                       true);
+                  textArea.appendText("🆗 You got " + partialMatches + " "
+                      + ((partialMatches == 1) ? "number" : "numbers") + " correct, but in the wrong spot", true);
+                  textArea.appendText(
+                      "❌ You got " + wrongNumbers + " " + ((wrongNumbers == 1) ? "number" : "numbers") + "wrong", true);
+
                 } else {
                   textArea.appendText("\nIt's a 4 digit number, you stupid? ", true);
                 }
@@ -197,7 +227,18 @@ public class GUI {
             textField.requestFocus();
 
           }
+
+          if (guessesRemaining > 0) {
+            textArea.appendText("You have " + guessesRemaining + " guesses remaining.", true);
+          } else {
+            textArea.appendText("You ran out of guesses! ", true);
+            textArea.appendText("The code was " + code, true);
+            stopwatch.pause();
+            explosionAnimation();
+
+          }
         }
+
       }
 
     });
