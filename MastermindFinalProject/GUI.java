@@ -37,10 +37,12 @@ public class GUI {
 
         if (explosionStopwatch.getElapsedTime() / 1000 <= explosionStopwatch.timerLimit) {
 
-          // f.setSize(200, 200);
+          f.setSize(200, 200);
           f.setLocation(rand.nextInt(500), rand.nextInt(500));
         } else {
           explosionStopwatch.pause();
+          f.setSize(400, 500);
+
         }
       }
     };
@@ -62,7 +64,7 @@ public class GUI {
             // f.setLocation(rand.nextInt(500), rand.nextInt(500));
           } else {
             stopwatch.pause();
-            textArea.appendText("\nYou lost L + ratio + bozo + you fell off + you use twitter ", true);
+            textArea.appendText("\nYou just got blown up!! ", true);
             textArea.appendText("The code was " + code, true);
             askIfUserWantsToPlayAgain();
 
@@ -94,7 +96,7 @@ public class GUI {
 
     // setup frame
     f.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-    f.setSize(500, 500);
+    f.setSize(400, 500);
     f.setLocation(300, 200);
 
     // setup label
@@ -123,7 +125,9 @@ public class GUI {
         "-------------------------\n\n" +
         "| EPILEPSY WARNING\n" +
         "| Yes, another bomb defusing game. \n" +
-        "| Your mission, which you have to accept, will be to guess the 4 digit code to defuse the bomb 💣\n" +
+        "| Your mission, which you have to accept\n" +
+        "| will be to guess the 4 digit code to defuse the bomb 💣\n" +
+        "| and yes, there can be repeat digits in the code.\n" +
         "| ⚡️ Type your first guess and press enter to start\n" +
         "| 😈 You can't leave the game until you win\n");
 
@@ -134,7 +138,6 @@ public class GUI {
 
   public static void resetGame() {
     // explosionStopwatch.reset();
-    textArea.setText("");
 
     guessesRemaining = 10;
     rand = new Random();
@@ -219,18 +222,18 @@ public class GUI {
 
                   String codeStringCopy = codeString;
 
-                  for (int i = 0; i<codeString.length(); i++) {
+                  for (int i = 0; i < codeString.length(); i++) {
                     if (guessString.charAt(i) == codeStringCopy.charAt(i)) {
-                      //exact match
+                      // exact match
                       exactMatches++;
-                      codeStringCopy = codeStringCopy.replaceFirst(guessString.charAt(i)+ "", "*");
+                      codeStringCopy = codeStringCopy.replaceFirst(guessString.charAt(i) + "", "*");
 
-                    } else if (codeStringCopy.indexOf(guessString.charAt(i)) != -1){
+                    } else if (codeStringCopy.indexOf(guessString.charAt(i)) != -1) {
                       partialMatches++;
 
-                      codeStringCopy = codeStringCopy.replaceFirst(guessString.charAt(i)+ "", "*");
+                      codeStringCopy = codeStringCopy.replaceFirst(guessString.charAt(i) + "", "*");
                     } else {
-                      //not in the array
+                      // not in the array
                       wrongNumbers++;
                     }
                   }
@@ -244,14 +247,14 @@ public class GUI {
                       "❌ " + wrongNumbers + " " + ((wrongNumbers == 1) ? "number" : "numbers") + " wrong", true);
 
                 } else {
-                  textArea.appendText("\nIt's a 4 digit number, you stupid? ", true);
+                  textArea.appendText("\nMake sure you enter a 4 digit number! ", true);
                 }
               }
 
             } catch (NumberFormatException error) {
               // textArea.appendText("\nEnter a valid number!", true);
               System.out.println(error);
-              textArea.appendText("\nEnter a valid number, you stupid? ", true);
+              textArea.appendText("\nEnter a valid number, only numbers! ", true);
             }
             textField.setText("");
             textField.setEnabled(true);
