@@ -228,10 +228,29 @@ public class GUI {
                       exactMatches++;
                       codeStringCopy = codeStringCopy.replaceFirst(guessString.charAt(i) + "", "*");
 
-                    } else if (codeStringCopy.indexOf(guessString.charAt(i)) != -1) {
-                      partialMatches++;
+                    } else if (codeStringCopy.contains(guessString.charAt(i) + "")) {
 
-                      codeStringCopy = codeStringCopy.replaceFirst(guessString.charAt(i) + "", "*");
+                      boolean anotherNumberIsExactMatch = false;
+
+                      for (int j = (i < guessString.length()) ? i + 1 : guessString.length(); j < guessString
+                          .length(); j++) {
+                        if (guessString.charAt(j) == guessString.charAt(i)) {
+                          if (guessString.charAt(j) == codeStringCopy.charAt(j)) {
+                            // another number is an exact match
+                            anotherNumberIsExactMatch = true;
+                          }
+                          // else another number is not an exact match
+                        }
+                        // else this is not the same number
+                      }
+
+                      if (!anotherNumberIsExactMatch) {
+                        partialMatches++;
+                        codeStringCopy = codeStringCopy.replaceFirst(guessString.charAt(i) + "", "*");
+                      } else {
+                        wrongNumbers++;
+                      }
+
                     } else {
                       // not in the array
                       wrongNumbers++;
