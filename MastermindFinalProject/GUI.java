@@ -164,8 +164,8 @@ public class GUI {
     guessesRemaining = 10;
     rand = new Random();
 
-    // code = rand.nextInt(9999 - 1000 + 1) + 1000;
-    code = 5323;
+    code = rand.nextInt(9999 - 1000 + 1) + 1000;
+    // code = 5323;
     codeString = "" + code;
 
     System.out.println(stopwatch.isRunning);
