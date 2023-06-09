@@ -7,6 +7,8 @@ import java.awt.event.ActionListener;
 import javax.swing.*;
 import java.util.TimerTask;
 import java.util.Random;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 
 public class GUI {
 
@@ -111,6 +113,26 @@ public class GUI {
     Insets padding = new Insets(5, 5, 5, 5);
     textField.setMargin(padding);
 
+    textField.setText("Type here to enter your guess");
+    textField.setForeground(Color.GRAY);
+    textField.addFocusListener(new FocusListener() {
+      @Override
+      public void focusGained(FocusEvent e) {
+        if (textField.getText().equals("Type here to enter your guess")) {
+          textField.setText("");
+          textField.setForeground(Color.BLACK);
+        }
+      }
+
+      @Override
+      public void focusLost(FocusEvent e) {
+        if (textField.getText().isEmpty()) {
+          textField.setForeground(Color.GRAY);
+          textField.setText("Type here to enter your guess");
+        }
+      }
+    });
+
     // Add the objects to the frame
     panel.add(BorderLayout.NORTH, label);
     panel.add(BorderLayout.CENTER, textArea.scrollPane);
@@ -131,7 +153,7 @@ public class GUI {
         "| ⚡️ Type your first guess and press enter to start\n" +
         "| 😈 You can't leave the game until you win\n");
 
-    textField.requestFocus();
+    // textField.requestFocus();
 
     // textArea.appendText("" + code, true);
   }
