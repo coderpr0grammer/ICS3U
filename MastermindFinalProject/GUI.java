@@ -1,5 +1,16 @@
+
+/*
+ * Daniel Martinez
+ * June 12th, 2023
+ * ICS3U
+ * 
+ * Main GUI file to house all of the graphical user interface functionality, game logic and initialization
+*/
+
+//part of the mastermindFinalProject folder
 package MastermindFinalProject;
 
+//import all of the necessary event listener methods and Java Swing components
 import java.awt.BorderLayout;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -18,30 +29,44 @@ public class GUI {
   public static Stopwatch stopwatch = new Stopwatch();
   public static Stopwatch explosionStopwatch = new Stopwatch();
   public static JLabel label = new JLabel();
-  public static ScrollableTextarea textArea = new ScrollableTextarea();
   public static JTextField textField = new JTextField(20);
+
+  // initialize a new instance of my custom java swing element that lets the
+  // textarea be scrollable
+  public static ScrollableTextarea textArea = new ScrollableTextarea();
+
+  // initialize game life cycle variables
   public static int guessesRemaining = 10;
   public static boolean gameStarted = false;
   public static boolean gameEnded = false;
   public static int secondsToPlay = 59;
-
-  public static Random rand;
   public static int code;
   public static String codeString;
+  public static Random rand;
 
+  /*
+   * create a method that resets an instance of a stopwatch
+   * then it creates a task to run every 10 milliseconds to move around the screen
+   * like an explosion
+   */
   public static void explosionAnimation() {
+    // reset timer
     explosionStopwatch.reset();
-    TimerTask task = new TimerTask() {
-      @Override
-      public void run() {
 
+    // create timer task
+    TimerTask task = new TimerTask() {
+      // method to run every period
+      public void run() {
+        // start a timer to last 3 seconds
         explosionStopwatch.start(3);
 
+        // check if the timer is not over, then move around the screen randomly
         if (explosionStopwatch.getElapsedTime() / 1000 <= explosionStopwatch.timerLimit) {
 
           f.setSize(200, 200);
           f.setLocation(rand.nextInt(500), rand.nextInt(500));
         } else {
+          // otherwise stop time timer and set it back to a reasonable size
           explosionStopwatch.pause();
           f.setSize(400, 500);
 
@@ -49,30 +74,31 @@ public class GUI {
       }
     };
 
-    // Schedule the task to run every 100 milliseconds
+    // Schedule the task to run every 10 milliseconds
     java.util.Timer timer = new java.util.Timer();
     timer.scheduleAtFixedRate(task, 0, 10);
   }
 
+  // create a timer task to display the timer
   public static void displayTimer() {
     TimerTask task = new TimerTask() {
-      @Override
+      // method to run every 10 millis
       public void run() {
+        // if the timer is running
         if (stopwatch.isRunning) {
+          // if the time hasn't run out
           if (stopwatch.getElapsedTime() / 1000 <= stopwatch.timerLimit) {
-            updateLabel(); // Update the label with the current time
-
-            // f.setSize(200, 200);
-            // f.setLocation(rand.nextInt(500), rand.nextInt(500));
+            // update the label that shows the timer
+            updateLabel();
           } else {
+            // otherwise the game has ended, so stop the timer, and show game over message
             stopwatch.pause();
             textArea.appendText("\nYou just got blown up!! ", true);
             textArea.appendText("The code was " + code, true);
             askIfUserWantsToPlayAgain();
 
-            // gameStarted = true;x
+            // wait for 500 millis before doing the explosion animation
             try {
-
               Thread.sleep(500);
             } catch (Exception e) {
               System.out.println(e);
@@ -85,18 +111,20 @@ public class GUI {
       }
     };
 
-    // Schedule the task to run every 100 milliseconds
+    // Schedule the task to run every 10 milliseconds
     java.util.Timer timer = new java.util.Timer();
     timer.scheduleAtFixedRate(task, 0, 10);
   }
 
+  // update the label that shows the time
   private static void updateLabel() {
     label.setText(" ⏰ " + stopwatch.getTimeString());
   }
 
+  // initialize the objects that appear in the frame
   public static void initializeFrame() {
 
-    // setup frame
+    // setup frame and don't let user exit until they win
     f.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
     f.setSize(400, 500);
     f.setLocation(300, 200);
@@ -113,19 +141,23 @@ public class GUI {
     Insets padding = new Insets(5, 5, 5, 5);
     textField.setMargin(padding);
 
+    // setup the placeholder for the text
     textField.setText("Type here to enter your guess");
     textField.setForeground(Color.GRAY);
+
+    // listen to the focus state of the textField
     textField.addFocusListener(new FocusListener() {
-      @Override
       public void focusGained(FocusEvent e) {
+        // if the text is filled with the placeholder, then set it to nothing when the
+        // focus is gained.
         if (textField.getText().equals("Type here to enter your guess")) {
           textField.setText("");
           textField.setForeground(Color.BLACK);
         }
       }
 
-      @Override
       public void focusLost(FocusEvent e) {
+        // if the textfield is empty and focus is lost, set the placeholder again
         if (textField.getText().isEmpty()) {
           textField.setForeground(Color.GRAY);
           textField.setText("Type here to enter your guess");
@@ -138,10 +170,11 @@ public class GUI {
     panel.add(BorderLayout.CENTER, textArea.scrollPane);
     panel.add(BorderLayout.SOUTH, textField);
 
-    // pack the frame to the size that the items actually take up
-    // f.pack();
+    // show the frame
     f.setVisible(true);
 
+    // display the intro with a typewriter effect (custom method in
+    // ScrollableTextarea class)
     textArea.typewriter("-------------------------\n" +
         "| Welcome to MASTERMIND 🧠 |\n" +
         "-------------------------\n\n" +
@@ -152,25 +185,20 @@ public class GUI {
         "| and yes, there can be repeat digits in the code.\n" +
         "| ⚡️ Type your first guess and press enter to start\n" +
         "| 😈 You can't leave the game until you win\n");
-
-    // textField.requestFocus();
-
-    // textArea.appendText("" + code, true);
   }
 
   public static void resetGame() {
-    // explosionStopwatch.reset();
 
+    // reset game life cycle variables
     guessesRemaining = 10;
     rand = new Random();
-
     code = rand.nextInt(9999 - 1000 + 1) + 1000;
-    // code = 5323;
     codeString = "" + code;
 
-    System.out.println(stopwatch.isRunning);
+    // set the timer label text back to 60
     label.setText(" ⏰ " + (secondsToPlay + 1) + ":00");
 
+    // show the rules again
     textArea.setText("-------------------------\n" +
         "| Welcome to MASTERMIND 🧠 |\n" +
         "-------------------------\n\n" +
@@ -180,105 +208,149 @@ public class GUI {
         "| ⚡️ Type your first guess and press enter to start\n" +
         "| 😈 You can't leave the game until you win\n");
 
+    // reset the main game timer
     stopwatch.reset();
   }
 
+  // prints the text to ask if the user wants to play again
+  // made this a method since I use it more than once
+  // makes code more readable
   public static void askIfUserWantsToPlayAgain() {
     textArea.appendText("\nWant to play a game?\nEnter a new guess to start a new game?", true);
   }
 
+  // algorithm to check what numbers are right
+  public static int[] algorithm(String guessString, String codeString) {
+
+    // make an array to output the multiple outputs in one variable
+
+    int[] output = new int[3];
+    int exactMatches = 0;
+    int partialMatches = 0;
+    int wrongNumbers = 0;
+
+    //make a copy of the codeString in order to avoid mutating it directly
+    String codeStringCopy = codeString;
+
+    //iterate through the numbers in the codeString
+    for (int i = 0; i < codeString.length(); i++) {
+      
+      if (guessString.charAt(i) == codeStringCopy.charAt(i)) {
+        // if it's an exact match, remove the number from the string to not reuse it
+        exactMatches++;
+        codeStringCopy = codeStringCopy.replaceFirst(guessString.charAt(i) + "", "*");
+
+      } else if (codeStringCopy.contains(guessString.charAt(i) + "")) {
+        //otherwise if the number in your answer is contained in the codeString, check if other numbers have an exact match
+
+        boolean anotherNumberIsExactMatch = false;
+
+        //loop through the rest of the numbers in your guess and check if they match exactly with a number in the code
+        for (int j = (i < guessString.length()) ? i + 1 : guessString.length(); j < guessString
+            .length(); j++) { //if i is less than the length, set j to the next position, otherwise set it to the length (4)
+          if (guessString.charAt(j) == guessString.charAt(i)) {
+            if (guessString.charAt(j) == codeStringCopy.charAt(j)) {
+              // another number is an exact match
+              anotherNumberIsExactMatch = true;
+            }
+            // else another number is not an exact match
+          }
+          // else this is not the same number
+        }
+
+        //if another of the same number is an exact match match, then don't count this one as a partial match
+        if (!anotherNumberIsExactMatch) {
+          partialMatches++;
+          codeStringCopy = codeStringCopy.replaceFirst(guessString.charAt(i) + "", "*");
+        } else {
+          wrongNumbers++;
+        }
+
+      } else {
+        // not in the array
+        wrongNumbers++;
+      }
+    }
+
+    //output the values
+    output[0] = exactMatches;
+    output[1] = partialMatches;
+    output[2] = wrongNumbers;
+
+    return output;
+  }
+
+  // creates a new instance of the game with all of the life cycle variables and
+  // other methods
   public void newGameInstance() {
 
+    // initialize game and frame variables
     initializeFrame();
 
+    // start the stopwatch
     stopwatch.start(secondsToPlay);
 
+    // pause it temporarily while timer is displayed
     stopwatch.pause();
 
     displayTimer();
 
+    // listen to enter presses in the textfield
     textField.addActionListener(new ActionListener() {
-
-      @Override
       public void actionPerformed(ActionEvent e) {
-        // pressed enter
+        // user pressed enter
 
+        // if the game hasn't started then reset it and start it
         if (!gameStarted) {
           resetGame();
-          System.out.println("code" + code);
           gameStarted = true;
         }
 
         if (stopwatch.isRunning) {
           // if the timer is not done
+
           if (textField.getText().length() >= 1) {
             // if they're actually inputting something
+
+            // temporarily disable the textField
             textField.setEnabled(false);
 
+            // get the text
             String guessString = textField.getText();
 
-            System.out.println(guessString);
-
+            // initialize guess variable
             int guess;
             textArea.appendText("\n" + guessString, true);
 
             try {
+              // try to parse the integer
               guess = Integer.parseInt(guessString);
+
               if (guess == code) {
+                // if they guessed correctly
                 textArea.appendText("You defused the bomb!", true);
                 stopwatch.pause();
 
                 gameStarted = false;
                 askIfUserWantsToPlayAgain();
 
+                // allow them to close the game
                 f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
               } else {
                 if (guessString.length() == 4) {
+                  // if it is a 4 digit number
 
                   guessesRemaining--;
 
-                  int exactMatches = 0;
-                  int partialMatches = 0;
-                  int wrongNumbers = 0;
+                  // run the algorithm to check which numbers are correct
+                  int[] output = algorithm(guessString, codeString);
 
-                  String codeStringCopy = codeString;
+                  int exactMatches = output[0];
+                  int partialMatches = output[1];
+                  int wrongNumbers = output[2];
 
-                  for (int i = 0; i < codeString.length(); i++) {
-                    if (guessString.charAt(i) == codeStringCopy.charAt(i)) {
-                      // exact match
-                      exactMatches++;
-                      codeStringCopy = codeStringCopy.replaceFirst(guessString.charAt(i) + "", "*");
-
-                    } else if (codeStringCopy.contains(guessString.charAt(i) + "")) {
-
-                      boolean anotherNumberIsExactMatch = false;
-
-                      for (int j = (i < guessString.length()) ? i + 1 : guessString.length(); j < guessString
-                          .length(); j++) {
-                        if (guessString.charAt(j) == guessString.charAt(i)) {
-                          if (guessString.charAt(j) == codeStringCopy.charAt(j)) {
-                            // another number is an exact match
-                            anotherNumberIsExactMatch = true;
-                          }
-                          // else another number is not an exact match
-                        }
-                        // else this is not the same number
-                      }
-
-                      if (!anotherNumberIsExactMatch) {
-                        partialMatches++;
-                        codeStringCopy = codeStringCopy.replaceFirst(guessString.charAt(i) + "", "*");
-                      } else {
-                        wrongNumbers++;
-                      }
-
-                    } else {
-                      // not in the array
-                      wrongNumbers++;
-                    }
-                  }
-
+                  //show the feedback
                   textArea.appendText(
                       "✅ " + exactMatches + " " + ((exactMatches == 1) ? "number" : "numbers") + " right",
                       true);
@@ -293,18 +365,24 @@ public class GUI {
               }
 
             } catch (NumberFormatException error) {
-              // textArea.appendText("\nEnter a valid number!", true);
+              // not a valid integer, error message
               System.out.println(error);
               textArea.appendText("\nEnter a valid number, only numbers! ", true);
             }
+
+            // empty the textfield and set it back to enabled
             textField.setText("");
             textField.setEnabled(true);
 
+            // focus again on the textfield
             textField.requestFocus();
 
             if (guessesRemaining > 0) {
+              // if the user hasn't run out of guesses
               textArea.appendText("You have " + guessesRemaining + " guesses remaining.", true);
             } else {
+              // if the user has run out of guesses, show the end message, pause timer and run
+              // the explosion animation
               textArea.appendText("\nYou ran out of guesses! ", true);
               textArea.appendText("The code was " + code, true);
               stopwatch.pause();
