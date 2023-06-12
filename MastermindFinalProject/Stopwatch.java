@@ -65,27 +65,4 @@ public class Stopwatch {
         return time;
     }
 
-    public void displayTimer() {
-        while (isRunning) {
-
-            if (getElapsedTime() / 1000 < timerLimit) {
-
-                System.out.print("\r");
-
-                // Display the elapsed time in the terminal
-                String time = getTimeString();
-                System.out.print("| ⏲ \s Clock's ticking: " + time + " |");
-
-                try {
-                    // Delay the loop for 1 second
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            } else {
-                pause();
-            }
-
-        }
-    }
 }
