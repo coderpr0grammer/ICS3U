@@ -225,9 +225,6 @@ public class GUI {
     // make an array to output the multiple outputs in one variable
 
     int[] output = new int[3];
-    int exactMatches = 0;
-    int partialMatches = 0;
-    int wrongNumbers = 0;
 
     //make a copy of the codeString in order to avoid mutating it directly
     String codeStringCopy = codeString;
@@ -237,7 +234,7 @@ public class GUI {
       
       if (guessString.charAt(i) == codeStringCopy.charAt(i)) {
         // if it's an exact match, remove the number from the string to not reuse it
-        exactMatches++;
+        output[0]++;
         codeStringCopy = codeStringCopy.replaceFirst(guessString.charAt(i) + "", "*");
 
       } else if (codeStringCopy.contains(guessString.charAt(i) + "")) {
@@ -260,22 +257,18 @@ public class GUI {
 
         //if another of the same number is an exact match match, then don't count this one as a partial match
         if (!anotherNumberIsExactMatch) {
-          partialMatches++;
+          output[1]++;
           codeStringCopy = codeStringCopy.replaceFirst(guessString.charAt(i) + "", "*");
         } else {
-          wrongNumbers++;
+          output[2]++;
         }
 
       } else {
         // not in the array
-        wrongNumbers++;
+        output[2]++;
       }
     }
 
-    //output the values
-    output[0] = exactMatches;
-    output[1] = partialMatches;
-    output[2] = wrongNumbers;
 
     return output;
   }
@@ -346,18 +339,14 @@ public class GUI {
                   // run the algorithm to check which numbers are correct
                   int[] output = algorithm(guessString, codeString);
 
-                  int exactMatches = output[0];
-                  int partialMatches = output[1];
-                  int wrongNumbers = output[2];
-
                   //show the feedback
                   textArea.appendText(
-                      "✅ " + exactMatches + " " + ((exactMatches == 1) ? "number" : "numbers") + " right",
+                      "✅ " + output[0] + " " + ((output[0] == 1) ? "number" : "numbers") + " right",
                       true);
-                  textArea.appendText("🆗 " + partialMatches + " "
-                      + ((partialMatches == 1) ? "number" : "numbers") + " correct, but in the wrong spot", true);
+                  textArea.appendText("🆗 " + output[1] + " "
+                      + ((output[1] == 1) ? "number" : "numbers") + " correct, but in the wrong spot", true);
                   textArea.appendText(
-                      "❌ " + wrongNumbers + " " + ((wrongNumbers == 1) ? "number" : "numbers") + " wrong", true);
+                      "❌ " + output[2] + " " + ((output[2] == 1) ? "number" : "numbers") + " wrong", true);
 
                 } else {
                   textArea.appendText("\nMake sure you enter a 4 digit number! ", true);
