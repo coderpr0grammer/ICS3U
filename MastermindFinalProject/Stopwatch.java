@@ -16,14 +16,18 @@ public class Stopwatch {
     public boolean isRunning;
     public int timerLimit;
 
-    //constructor sets the defaults of these
+    //Pre: nothing
+    //Does: constructor sets the defaults of these
+    //post: nothing
     public Stopwatch() {
         startTime = 0;
         elapsedTime = 0;
         isRunning = false;
     }
 
-    //start the stopwatch
+    //pre: time limit that you want the user to have to play the game
+    //Does: start the stopwatch
+    //post: nothing
     public void start(int limit) {
         timerLimit = limit;
         if (!isRunning) {
@@ -32,7 +36,9 @@ public class Stopwatch {
         }
     }
 
-    //pause the stopwatch
+    //pre: nothing
+    //Does: pause the stopwatch
+    //post: nothing
     public void pause() {
         if (isRunning) {
             //set the elapsed time to current time minus start time
@@ -41,14 +47,18 @@ public class Stopwatch {
         }
     }
 
-    //reset the stopwatch
+    //pre: nothing
+    //Does: reset the stopwatch
+    //post: nothing
     public void reset() {
         elapsedTime = 0;
         startTime = System.currentTimeMillis();
         isRunning = true;
     }
 
-    //get the elapsed time
+    //Pre: nothing
+    //Does: get the elapsed time
+    //post: returns the total elapsed time as a long.
     public long getElapsedTime() {
         long totalTime = elapsedTime;
         if (isRunning) {
@@ -57,7 +67,9 @@ public class Stopwatch {
         return totalTime;
     }
 
-    //create a formatted time string using String.format()
+    //pre: nothing
+    //Does: create a formatted time string using String.format()
+    //post: returns the time string as a formatted string in the format 00:00
     public String getTimeString() {
         long totalTime = getElapsedTime();
 

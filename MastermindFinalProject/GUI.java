@@ -45,9 +45,11 @@ public class GUI {
   public static Random rand;
 
   /*
-   * create a method that resets an instance of a stopwatch
+   * pre: nothing
+   * Does: create a method that resets an instance of a stopwatch
    * then it creates a task to run every 10 milliseconds to move around the screen
    * like an explosion
+   * post: returns nothing.
    */
   public static void explosionAnimation() {
     // reset timer
@@ -80,6 +82,8 @@ public class GUI {
   }
 
   // create a timer task to display the timer
+  // pre: nothing required as parameters, timer just must be running
+  // post: updates the label
   public static void displayTimer() {
     TimerTask task = new TimerTask() {
       // method to run every 10 millis
@@ -116,12 +120,17 @@ public class GUI {
     timer.scheduleAtFixedRate(task, 0, 10);
   }
 
-  // update the label that shows the time
+  // pre: nothing
+  // Does: update the label that shows the time
+  // post: sets the text of the JLabel
   private static void updateLabel() {
     label.setText(" ⏰ " + stopwatch.getTimeString());
   }
 
-  // initialize the objects that appear in the frame
+  // pre: nothing
+  // Does: initialize the objects that appear in the frame. starts Java Swing
+  // objects and and displays intro message
+  // post: returns nothing.
   public static void initializeFrame() {
 
     // setup frame and don't let user exit until they win
@@ -187,8 +196,11 @@ public class GUI {
         "| 😈 You can't leave the game until you win\n");
   }
 
+  // pre: nothing
+  // pre: resets important life cycle variables of the game and prints
+  // instructions again
+  // post: nothing
   public static void resetGame() {
-
     // reset game life cycle variables
     guessesRemaining = 10;
     rand = new Random();
@@ -212,9 +224,11 @@ public class GUI {
     stopwatch.reset();
   }
 
-  // prints the text to ask if the user wants to play again
+  // pre: nothing
+  // Does: prints the text to ask if the user wants to play again
   // made this a method since I use it more than once
   // makes code more readable
+  // post: nothing
   public static void askIfUserWantsToPlayAgain() {
     textArea.appendText("\nWant to play a game?\nEnter a new guess to start a new game?", true);
   }
@@ -226,25 +240,28 @@ public class GUI {
 
     int[] output = new int[3];
 
-    //make a copy of the codeString in order to avoid mutating it directly
+    // make a copy of the codeString in order to avoid mutating it directly
     String codeStringCopy = codeString;
 
-    //iterate through the numbers in the codeString
+    // iterate through the numbers in the codeString
     for (int i = 0; i < codeString.length(); i++) {
-      
+
       if (guessString.charAt(i) == codeStringCopy.charAt(i)) {
         // if it's an exact match, remove the number from the string to not reuse it
         output[0]++;
         codeStringCopy = codeStringCopy.replaceFirst(guessString.charAt(i) + "", "*");
 
       } else if (codeStringCopy.contains(guessString.charAt(i) + "")) {
-        //otherwise if the number in your answer is contained in the codeString, check if other numbers have an exact match
+        // otherwise if the number in your answer is contained in the codeString, check
+        // if other numbers have an exact match
 
         boolean anotherNumberIsExactMatch = false;
 
-        //loop through the rest of the numbers in your guess and check if they match exactly with a number in the code
+        // loop through the rest of the numbers in your guess and check if they match
+        // exactly with a number in the code
         for (int j = (i < guessString.length()) ? i + 1 : guessString.length(); j < guessString
-            .length(); j++) { //if i is less than the length, set j to the next position, otherwise set it to the length (4)
+            .length(); j++) { // if i is less than the length, set j to the next position, otherwise set it to
+                              // the length (4)
           if (guessString.charAt(j) == guessString.charAt(i)) {
             if (guessString.charAt(j) == codeStringCopy.charAt(j)) {
               // another number is an exact match
@@ -255,7 +272,8 @@ public class GUI {
           // else this is not the same number
         }
 
-        //if another of the same number is an exact match match, then don't count this one as a partial match
+        // if another of the same number is an exact match match, then don't count this
+        // one as a partial match
         if (!anotherNumberIsExactMatch) {
           output[1]++;
           codeStringCopy = codeStringCopy.replaceFirst(guessString.charAt(i) + "", "*");
@@ -269,12 +287,13 @@ public class GUI {
       }
     }
 
-
+    // returns an array with the exactMatches, partialMatches and wrongNumbers
     return output;
   }
 
-  // creates a new instance of the game with all of the life cycle variables and
-  // other methods
+  // pre: nothing
+  // Does: creates a new instance of the game with all of the life cycle variables and other methods
+  // post: nothing
   public void newGameInstance() {
 
     // initialize game and frame variables
@@ -339,7 +358,7 @@ public class GUI {
                   // run the algorithm to check which numbers are correct
                   int[] output = algorithm(guessString, codeString);
 
-                  //show the feedback
+                  // show the feedback
                   textArea.appendText(
                       "✅ " + output[0] + " " + ((output[0] == 1) ? "number" : "numbers") + " right",
                       true);
