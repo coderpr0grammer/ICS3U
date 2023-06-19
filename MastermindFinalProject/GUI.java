@@ -39,7 +39,7 @@ public class GUI {
   public static int guessesRemaining = 10;
   public static boolean gameStarted = false;
   public static boolean gameEnded = false;
-  public static int secondsToPlay = 59;
+  public static final int secondsToPlay = 59;
   public static int code;
   public static String codeString;
   public static Random rand;
